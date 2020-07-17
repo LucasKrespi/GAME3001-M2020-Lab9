@@ -14,8 +14,10 @@ PlayScene::~PlayScene()
 void PlayScene::draw()
 {
 	drawDisplayList();
-
-	Util::DrawLine(m_pPlayer->getTransform()->position, m_pPlaneSprite->getTransform()->position);
+	if (m_debugMode)
+	{
+		Util::DrawLine(m_pPlayer->getTransform()->position, m_pPlaneSprite->getTransform()->position);
+	}
 }
 
 void PlayScene::update()
@@ -113,6 +115,46 @@ void PlayScene::handleEvents()
 		TheGame::Instance()->quit();
 	}
 
+	// H CODE KEY
+	if (!m_DebugKeys[H_KEY])
+	{
+		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_H))
+		{
+			m_debugMode = !m_debugMode;
+			m_DebugKeys[H_KEY] = true;
+		}
+	}
+	if (EventManager::Instance().isKeyUp(SDL_SCANCODE_H))
+	{
+		m_DebugKeys[H_KEY] = false;
+	}
+
+	// K CODE KEY
+
+	if (!m_DebugKeys[K_KEY])
+	{
+		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_K))
+		{
+			std::cout << "Debug Enemy takes Damage!!\n";
+			m_DebugKeys[K_KEY] = true;
+		}
+	}
+	if (EventManager::Instance().isKeyUp(SDL_SCANCODE_K))
+	{
+		m_DebugKeys[K_KEY] = false;
+	}
+
+	//P CODE KEY 
+	if (!m_DebugKeys[P_KEY])
+	{
+		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_P))
+		{
+			m_patrolMode = !m_patrolMode;
+			m_DebugKeys[P_KEY] = true;
+
+		}
+	}
+
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_1))
 	{
 		TheGame::Instance()->changeSceneState(START_SCENE);
@@ -126,6 +168,8 @@ void PlayScene::handleEvents()
 
 void PlayScene::start()
 {
+	m_debugMode = false;
+
 	// Plane Sprite
 	m_pPlaneSprite = new Plane();
 	addChild(m_pPlaneSprite);
@@ -138,5 +182,4 @@ void PlayScene::start()
 	// Obstacle Texture
 	m_pObstacle = new Obstacle();
 	addChild(m_pObstacle);
-	
 }
